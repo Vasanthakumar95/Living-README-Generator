@@ -1,20 +1,23 @@
 # Living README Generator 📝✨
-
 > **Stop the rot.** Automatically verify your README setup instructions so they never lie again.
 
 <!-- VERIFICATION-BADGES -->
-![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F19%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-0%25-brightgreen)
+![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F20%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
 <!-- END-VERIFICATION-BADGES -->
 
-✅ Verification Steps (This Project)
-This README verifies its own setup instructions to demonstrate the tool in action:
+### ✅ Verification Demonstration (This Project)
+
 ---
 verify: true
 step: "check-node"
-description: "Verify Node.js 18+ is installed"
+description: "Ensure Node.js 18+"
+required: true            
+timeout: 60000            
+workingDir: "."           
 ---
-node --version | grep -E "v(18|19|20|21|22)"
-
+```bash
+node --version | grep -E "v1[8-9]|v2[0-9]"
+```
 
 ## 🎯 Problem
 
@@ -71,7 +74,7 @@ pip install pyyaml  # for Python
 
 Add YAML frontmatter above code blocks in your README:
 
-```markdown
+````markdown
 ---
 verify: true
 step: "install-dependencies"
@@ -80,25 +83,19 @@ description: "Install all project dependencies"
 \`\`\`bash
 npm install
 \`\`\`
-```
+````
 
 ### 3. Add Badge Placeholder
 
-Add this to your README (typically after the title):
-
-```markdown
-<!-- VERIFICATION-BADGES -->
-![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F19%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-0%25-brightgreen)
-<!-- END-VERIFICATION-BADGES -->
-```
+Add the BADGES to your README (typically after the title as shown in this file under title).
 
 ### 4. Run Locally
 
-Test your verification setup:
+Test your setup:
 
-```bash
+\`\`\`bash
 node scripts/verify-readme.js README.md
-```
+\`\`\`bash
 
 ### 5. Commit & Let CI Run
 
@@ -108,14 +105,13 @@ Push to your repository. The GitHub Action will:
 - Update badges automatically
 - Create issues if steps fail
 
-
 ## 📖 Documentation
 
 ### YAML Frontmatter Options
 
 Mark any code block for verification:
 
-```yaml
+````yaml
 ---
 verify: true              # Enable verification (required)
 step: "unique-step-name"  # Unique identifier (auto-generated if omitted)
@@ -124,11 +120,11 @@ required: true            # Stop verification if this fails (default: true)
 timeout: 60000            # Max execution time in ms (default: 60000)
 workingDir: "."           # Directory to run command in (default: current)
 ---
-```
+````
 
 ### Example: Complete Setup Flow
 
-```markdown
+````markdown
 ## Installation
 
 Check Node.js version:
@@ -165,7 +161,7 @@ required: false
 \`\`\`bash
 npm run lint
 \`\`\`
-```
+````
 
 ### Sequential Execution
 

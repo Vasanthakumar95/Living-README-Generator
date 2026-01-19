@@ -54,8 +54,13 @@ class ReadmeVerifier:
                         'timeout': frontmatter.get('timeout', 60),
                         'workingDir': frontmatter.get('workingDir', '.')
                     })
+                # Silently skip YAML blocks without 'verify: true' (likely documentation)
             except Exception as e:
-                print(f'Warning: Failed to parse frontmatter: {e}')
+                # Only warn if we found potential verification blocks with errors
+                has_verify_keyword = 'verify' in match.group(1).lower()
+                if has_verify_keyword:
+                    print(f'Warning: Found YAML with "verify" but failed to parse: {e}')
+                # Otherwise silently skip (likely documentation examples)
         
         return steps
     

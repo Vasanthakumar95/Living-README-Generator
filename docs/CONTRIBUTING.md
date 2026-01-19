@@ -23,7 +23,6 @@ We welcome contributions in several areas:
 - Industry-specific templates (e.g., React, Django, Go)
 - Monorepo examples
 - Docker-based projects
-- Mobile development setups
 
 ### 4. Bug Fixes
 - Fix parsing issues
@@ -73,10 +72,10 @@ git checkout -b fix/bug-description
 **Test the verification script:**
 ```bash
 # Python
-python3 scripts/verify-readme.py examples/README.simple.md
+python3 scripts/verify-readme.py examples/README.example.md
 
 # Node.js
-node scripts/verify-readme.js examples/README.simple.md
+node scripts/verify-readme.js examples/README.example.md
 ```
 
 **Test with your own README:**
@@ -197,7 +196,7 @@ Found a bug?
 
 ## 📚 Areas Needing Help
 
-Currently, we'd especially appreciate help with:
+Currently, I'd especially appreciate help with:
 
 ### High Priority
 - [ ] Ubuntu/Linux support in workflow
@@ -214,8 +213,6 @@ Currently, we'd especially appreciate help with:
 ### Low Priority
 - [ ] Badge customization options
 - [ ] Alternative badge providers
-- [ ] Verification result API
-- [ ] Browser extension for badge viewing
 
 ## 🤝 Code of Conduct
 
@@ -274,4 +271,4 @@ Every contribution makes this project better. Whether it's:
 
 ---
 
-**Questions?** Open an issue or start a discussion. We're here to help!
+**Questions?** Open an issue or start a discussion.

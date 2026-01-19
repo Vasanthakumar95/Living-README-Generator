@@ -68,8 +68,15 @@ class ReadmeVerifier {
             workingDir: frontmatter.workingDir || process.cwd()
           });
         }
+        // Silently skip YAML blocks without 'verify: true' (likely documentation examples)
       } catch (e) {
-        console.warn('Failed to parse frontmatter:', e.message);
+        // Only warn if we found potential verification blocks with errors
+        // Skip warnings for documentation examples
+        const hasVerifyKeyword = match[1].toLowerCase().includes('verify');
+        if (hasVerifyKeyword) {
+          console.warn('Warning: Found YAML with "verify" but failed to parse:', e.message);
+        }
+        // Otherwise silently skip (likely documentation)
       }
     }
     
