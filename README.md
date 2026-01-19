@@ -2,12 +2,12 @@
 > **Stop the rot.** Automatically verify your README setup instructions so they never lie again.
 
 <!-- VERIFICATION-BADGES -->
-![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F19%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
+![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F20%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
 <!-- END-VERIFICATION-BADGES -->
 
 ### ✅ Verification Demonstration (This Project)
 
-```markdown
+````text
 ---
 verify: true
 step: "check-node"
@@ -19,7 +19,7 @@ workingDir: "."
 ```bash
 node --version | grep -E "v1[8-9]|v2[0-9]"
 ```
-```
+````
 
 ## 🎯 Problem
 
