@@ -109,7 +109,6 @@ verify: true
 step: "check-node"
 description: "Verify Node.js 18+ is installed"
 ---
-bash
 node --version | grep -E "v(18|19|20|21|22)"
 
 ## 📖 Documentation
