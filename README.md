@@ -3,7 +3,7 @@
 > **Stop the rot.** Automatically verify your README setup instructions so they never lie again.
 
 <!-- VERIFICATION-BADGES -->
-<!-- Badges will be auto-generated here -->
+![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F19%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-0%25-brightgreen)
 <!-- END-VERIFICATION-BADGES -->
 
 ## 🎯 Problem
@@ -78,6 +78,7 @@ Add this to your README (typically after the title):
 
 ```markdown
 <!-- VERIFICATION-BADGES -->
+![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F19%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-0%25-brightgreen)
 <!-- END-VERIFICATION-BADGES -->
 ```
 
