@@ -20,6 +20,10 @@ jobs:
   verify-macos:
     name: Verify on macOS
     runs-on: macos-latest
+    # Fix Issue 1: Add permissions for write access
+    permissions:
+      contents: write
+      issues: write
     
     steps:
       - name: Checkout repository
@@ -27,6 +31,8 @@ jobs:
         with:
           # Need full checkout to commit changes back
           fetch-depth: 0
+          # Fix Issue 1: Use token with write permissions
+          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -54,9 +60,15 @@ jobs:
       
       - name: Commit badge updates
         if: always()
+        env:
+          # Make GITHUB_TOKEN available as environment variable
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          
+          # Configure git to use token for authentication
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           
           # Check if there are changes
           if git diff --quiet README.md; then
@@ -125,21 +137,5 @@ jobs:
         if: always()
         run: |
           if [ -f .github/readme-verifier/results.json ]; then
-            node -e "
-            const results = require('./.github/readme-verifier/results.json');
-            const total = results.steps.length;
-            const success = results.steps.filter(s => s.status === 'success').length;
-            const failed = results.steps.filter(s => s.status === 'failed').length;
-            const warnings = results.steps.filter(s => s.status === 'warning').length;
-            
-            console.log('## Verification Summary');
-            console.log('');
-            console.log('| Metric | Value |');
-            console.log('|--------|-------|');
-            console.log(\`| Total Steps | ${total} |\`);
-            console.log(\`| ✅ Success | ${success} |\`);
-            console.log(\`| ❌ Failed | ${failed} |\`);
-            console.log(\`| ⚠️ Warnings | ${warnings} |\`);
-            console.log(\`| Success Rate | ${Math.round((success/total)*100)}% |\`);
-            " >> $GITHUB_STEP_SUMMARY
+            node -e 'const results = require("./.github/readme-verifier/results.json"); const total = results.steps.length; const success = results.steps.filter(s => s.status === "success").length; const failed = results.steps.filter(s => s.status === "failed").length; const warnings = results.steps.filter(s => s.status === "warning").length; console.log("## Verification Summary"); console.log(""); console.log("| Metric | Value |"); console.log("|--------|-------|"); console.log("| Total Steps | " + total + " |"); console.log("| ✅ Success | " + success + " |"); console.log("| ❌ Failed | " + failed + " |"); console.log("| ⚠️ Warnings | " + warnings + " |"); console.log("| Success Rate | " + Math.round((success/total)*100) + "% |");' >> $GITHUB_STEP_SUMMARY
           fi
