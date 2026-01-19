@@ -6,6 +6,20 @@
 ![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F19%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-0%25-brightgreen)
 <!-- END-VERIFICATION-BADGES -->
 
+## ✅ Verification Steps (This Project)
+
+This README verifies its own setup instructions to demonstrate the tool in action:
+
+### Check Node.js Version
+
+---
+verify: true
+step: "check-node"
+description: "Verify Node.js 18+ is installed"
+---
+node --version | grep -E "v(18|19|20|21|22)"
+
+
 ## 🎯 Problem
 
 READMEs are the first thing developers see, but they're often:
@@ -98,18 +112,6 @@ Push to your repository. The GitHub Action will:
 - Update badges automatically
 - Create issues if steps fail
 
-## ✅ Verification Steps (This Project)
-
-This README verifies its own setup instructions to demonstrate the tool in action:
-
-### Check Node.js Version
-
----
-verify: true
-step: "check-node"
-description: "Verify Node.js 18+ is installed"
----
-node --version | grep -E "v(18|19|20|21|22)"
 
 ## 📖 Documentation
 
