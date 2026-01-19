@@ -97,6 +97,19 @@ Push to your repository. The GitHub Action will:
 - Update badges automatically
 - Create issues if steps fail
 
+## ✅ Verification Steps (This Project)
+
+This README verifies its own setup instructions to demonstrate the tool in action:
+
+### Check Node.js Version
+
+---
+verify: true
+step: "check-node"
+description: "Verify Node.js 18+ is installed"
+---
+node --version | grep -E "v(18|19|20|21|22)"
+
 ## 📖 Documentation
 
 ### YAML Frontmatter Options
