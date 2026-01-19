@@ -1,0 +1,105 @@
+# README Verifier Configuration
+
+# Environments to test against
+environments:
+  - name: macos
+    runner: macos-latest
+    enabled: true
+  
+  # Future: Add more environments
+  # - name: ubuntu
+  #   runner: ubuntu-latest
+  #   enabled: false
+  # 
+  # - name: windows
+  #   runner: windows-latest
+  #   enabled: false
+
+# Verification settings
+settings:
+  # How often to run verification (cron syntax)
+  schedule: "0 2 * * *"  # Daily at 2 AM UTC
+  
+  # Default timeout for steps (ms)
+  defaultTimeout: 60000
+  
+  # Maximum total verification time (ms)
+  maxVerificationTime: 600000  # 10 minutes
+  
+  # Stop on first failure?
+  stopOnFailure: true
+  
+  # Create GitHub issues on failure?
+  createIssues: true
+  
+  # Badge settings
+  badges:
+    enabled: true
+    location: "top"  # "top" or "bottom" of README
+    style: "flat"    # shields.io style: flat, flat-square, plastic, for-the-badge
+
+# Notification settings
+notifications:
+  # Create issues for failures
+  issues:
+    enabled: true
+    labels:
+      - "readme-verification"
+      - "documentation"
+      - "bug"
+  
+  # Future: Add Slack, email, etc.
+  # slack:
+  #   enabled: false
+  #   webhook: ""
+
+# Step execution
+execution:
+  # Execute steps sequentially (vs parallel)
+  sequential: true
+  
+  # Preserve environment between steps
+  preserveEnv: true
+  
+  # Working directory for all steps (unless overridden)
+  workingDir: "."
+
+# Results storage
+storage:
+  # Where to save results
+  resultsPath: ".github/readme-verifier/results.json"
+  
+  # Keep history of results?
+  keepHistory: true
+  historyPath: ".github/readme-verifier/history/"
+  
+  # How many historical results to keep
+  historyLimit: 30
+
+# Security
+security:
+  # Allow network access during verification
+  allowNetwork: true
+  
+  # Allowed commands (empty = all allowed)
+  # Example: ["npm", "node", "git", "curl"]
+  allowedCommands: []
+  
+  # Blocked commands (takes precedence over allowed)
+  blockedCommands:
+    - "rm -rf"
+    - "sudo"
+    - "chmod 777"
+
+# Advanced
+advanced:
+  # Use Docker for isolation (future feature)
+  useDocker: false
+  
+  # Docker image to use
+  dockerImage: "node:18"
+  
+  # Custom environment variables for verification
+  envVars:
+    NODE_ENV: "test"
+    CI: "true"

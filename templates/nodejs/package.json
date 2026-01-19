@@ -1,0 +1,25 @@
+{
+  "name": "readme-verifier",
+  "version": "1.0.0",
+  "description": "Living README Generator - Automatically verify setup instructions",
+  "main": "scripts/verify-readme.js",
+  "scripts": {
+    "verify": "node scripts/verify-readme.js README.md",
+    "verify:watch": "nodemon --watch README.md --exec 'npm run verify'"
+  },
+  "keywords": [
+    "readme",
+    "documentation",
+    "verification",
+    "ci",
+    "testing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
