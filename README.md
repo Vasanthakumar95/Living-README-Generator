@@ -2,7 +2,7 @@
 > **Stop the rot.** Automatically verify your README setup instructions so they never lie again.
 
 <!-- VERIFICATION-BADGES -->
-![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F19%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
+![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-macOS-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-1%2F20%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
 <!-- END-VERIFICATION-BADGES -->
 
 ### ✅ Verification Demonstration (This Project)
@@ -363,4 +363,4 @@ A: Yes! Run `node scripts/verify-readme.js` locally anytime.
 
 **Made with ❤️ to end README rot forever.**
 
-[⭐ Star this repo](https://github.com/[your-repo]) if you're tired of outdated docs!
+[⭐ Star this repo](https://github.com/Vasanthakumar95/Living-README-Generator) if you're tired of outdated docs!
