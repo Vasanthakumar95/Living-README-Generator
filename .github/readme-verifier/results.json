@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-01-19T18:31:17.292Z",
+  "timestamp": "2026-01-19T18:34:24.566Z",
   "environment": {
     "os": "macOS",
     "arch": "arm64",
-    "nodeVersion": "v24.12.0",
+    "nodeVersion": "v18.20.8",
     "platform": "darwin"
   },
   "steps": [
@@ -11,10 +11,10 @@
       "name": "check-node",
       "description": "Ensure Node.js 18+",
       "status": "success",
-      "output": "v24.12.0\n",
+      "output": "v18.20.8\n",
       "error": "",
-      "duration": 14,
-      "timestamp": "2026-01-19T18:31:17.296Z"
+      "duration": 43,
+      "timestamp": "2026-01-19T18:34:24.571Z"
     }
   ]
 }
