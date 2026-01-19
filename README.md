@@ -7,6 +7,7 @@
 
 ### ✅ Verification Demonstration (This Project)
 
+```markdown
 ---
 verify: true
 step: "check-node"
@@ -17,6 +18,7 @@ workingDir: "."
 ---
 ```bash
 node --version | grep -E "v1[8-9]|v2[0-9]"
+```
 ```
 
 ## 🎯 Problem
