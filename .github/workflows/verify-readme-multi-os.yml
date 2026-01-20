@@ -7,17 +7,6 @@ on:
   
   # Allow manual trigger
   workflow_dispatch:
-    inputs:
-      os:
-        description: 'Operating System to test on'
-        required: false
-        default: 'all'
-        type: choice
-        options:
-          - all
-          - macos
-          - ubuntu
-          - windows
   
   # Run on push to main (optional, for testing)
   push:
@@ -27,6 +16,12 @@ on:
       - 'scripts/verify-readme.js'
       - 'scripts/verify-readme.py'
       - '.github/workflows/verify-readme-multi-os.yml'
+
+# Add permissions to allow pushing changes
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   # Matrix strategy to run on multiple operating systems
@@ -53,19 +48,13 @@ jobs:
             os-name: Windows
             script-ext: py
     
-    # Skip matrix entries based on manual trigger input
-    if: |
-      github.event_name != 'workflow_dispatch' || 
-      github.event.inputs.os == 'all' || 
-      (github.event.inputs.os == 'macos'  == 'macos-latest') ||
-      (github.event.inputs.os == 'ubuntu'  == 'ubuntu-latest') ||
-      (github.event.inputs.os == 'windows'  == 'windows-latest')
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
       
       - name: Setup Python
         uses: actions/setup-python@v5
