@@ -348,12 +348,20 @@ class ReadmeVerifier:
                 ]
                 
                 # Add rows for each OS
-                for os_name in ['macOS', 'Ubuntu', 'Windows']:
-                    # Find matching OS in results (handle different naming)
+                os_display_names = {
+                    'macOS': ['macos', 'darwin'],
+                    'Ubuntu': ['ubuntu', 'linux'],
+                    'Windows': ['windows']
+                }
+                
+                for display_name, match_names in os_display_names.items():
+                    # Find matching OS in results
                     stats = None
+                    matched_key = None
                     for key, value in combined.get('results_by_os', {}).items():
-                        if os_name.lower() in key.lower() or (os_name == 'macOS' and 'darwin' in key.lower()):
+                        if any(name in key.lower() for name in match_names):
                             stats = value
+                            matched_key = key
                             break
                     
                     if stats:
@@ -371,10 +379,15 @@ class ReadmeVerifier:
                         else:
                             status = '❌'
                         
-                        table_lines.append(f'| {status} {os_name} | {total} | {success} | {failed} | {warnings} | {rate}% |')
+                        # Use actual OS name from results in parentheses if different
+                        os_label = display_name
+                        if matched_key and matched_key != display_name:
+                            os_label = f'{display_name} ({matched_key})'
+                        
+                        table_lines.append(f'| {status} {os_label} | {total} | {success} | {failed} | {warnings} | {rate}% |')
                     else:
                         # OS not tested
-                        table_lines.append(f'| ⏭️ {os_name} | - | - | - | - | - |')
+                        table_lines.append(f'| ⏭️ {display_name} | - | - | - | - | - |')
                 
                 # Add overall summary
                 table_lines.extend([
