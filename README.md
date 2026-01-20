@@ -17,7 +17,7 @@ timeout: 60000
 workingDir: "."           
 ---
 ```bash
-node --version | grep -E "v1[8-9]|v2[0-9]"
+node -e "const v = parseInt(process.version.slice(1)); if (v < 18) { console.error('Node.js 18+ required'); process.exit(1); } console.log('✓ Node.js v' + v);"
 ```
 ````
 

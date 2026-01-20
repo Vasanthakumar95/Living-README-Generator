@@ -1,0 +1,278 @@
+name: Verify README Setup Instructions (Multi-OS)
+
+on:
+  # Run daily at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Operating System to test on'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - macos
+          - ubuntu
+          - windows
+  
+  # Run on push to main (optional, for testing)
+  push:
+    branches: [ main ]
+    paths:
+      - 'README.md'
+      - 'scripts/verify-readme.js'
+      - 'scripts/verify-readme.py'
+      - '.github/workflows/verify-readme-multi-os.yml'
+
+jobs:
+  # Matrix strategy to run on multiple operating systems
+  verify:
+    name: Verify on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false  # Continue testing other OSes even if one fails
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: macos-latest
+            os-name: macOS
+            script-ext: py
+            shell: bash
+          - os: ubuntu-latest
+            os-name: Ubuntu
+            script-ext: py
+            shell: bash
+          - os: windows-latest
+            os-name: Windows
+            script-ext: py
+            shell: pwsh
+    
+    # Skip matrix entries based on manual trigger input
+    if: |
+      github.event_name != 'workflow_dispatch' || 
+      github.event.inputs.os == 'all' || 
+      github.event.inputs.os == matrix.os-name
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+      
+      - name: Run README verification
+        id: verify
+        continue-on-error: true
+        shell: ${{ matrix.shell }}
+        run: |
+          python scripts/verify-readme.py README.md
+      
+      - name: Upload verification results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-results-${{ matrix.os-name }}
+          path: .github/readme-verifier/results.json
+          retention-days: 30
+      
+      - name: Save results with OS identifier
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p .github/readme-verifier/history
+          cp .github/readme-verifier/results.json .github/readme-verifier/history/results-${{ matrix.os-name }}.json
+      
+      - name: Commit badge updates (only on macOS to avoid conflicts)
+        if: always() && matrix.os == 'macos-latest'
+        shell: bash
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Check if there are changes
+          if git diff --quiet README.md; then
+            echo "No changes to commit"
+          else
+            git add README.md
+            git add .github/readme-verifier/
+            git commit -m "🔄 Update README verification badges [skip ci]"
+            git push
+          fi
+      
+      - name: Post summary for this OS
+        if: always()
+        shell: bash
+        run: |
+          if [ -f .github/readme-verifier/results.json ]; then
+            python3 << 'EOF'
+          import json
+          import sys
+          
+          with open('.github/readme-verifier/results.json') as f:
+              results = json.load(f)
+          
+          total = len(results['steps'])
+          success = sum(1 for s in results['steps'] if s['status'] == 'success')
+          failed = sum(1 for s in results['steps'] if s['status'] == 'failed')
+          warnings = sum(1 for s in results['steps'] if s['status'] == 'warning')
+          
+          print(f"## {results['environment']['os']} Verification Summary")
+          print()
+          print("| Metric | Value |")
+          print("|--------|-------|")
+          print(f"| Total Steps | {total} |")
+          print(f"| ✅ Success | {success} |")
+          print(f"| ❌ Failed | {failed} |")
+          print(f"| ⚠️ Warnings | {warnings} |")
+          print(f"| Success Rate | {round((success/total)*100) if total > 0 else 0}% |")
+          EOF
+          fi
+  
+  # Aggregate results from all OSes
+  aggregate-results:
+    name: Aggregate Multi-OS Results
+    needs: verify
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          path: verification-results
+      
+      - name: Generate combined report
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          from pathlib import Path
+          
+          results_dir = Path('verification-results')
+          combined = {
+              'timestamp': '',
+              'results_by_os': {}
+          }
+          
+          for os_dir in results_dir.iterdir():
+              if os_dir.is_dir():
+                  results_file = os_dir / 'results.json'
+                  if results_file.exists():
+                      with open(results_file) as f:
+                          data = json.load(f)
+                      
+                      os_name = data['environment']['os']
+                      combined['results_by_os'][os_name] = {
+                          'total': len(data['steps']),
+                          'success': sum(1 for s in data['steps'] if s['status'] == 'success'),
+                          'failed': sum(1 for s in data['steps'] if s['status'] == 'failed'),
+                          'warnings': sum(1 for s in data['steps'] if s['status'] == 'warning'),
+                          'timestamp': data['timestamp']
+                      }
+                      
+                      if not combined['timestamp']:
+                          combined['timestamp'] = data['timestamp']
+          
+          # Generate summary
+          print("## 📊 Multi-OS Verification Summary")
+          print()
+          print("| OS | Total | Success | Failed | Warnings | Success Rate |")
+          print("|---|---|---|---|---|---|")
+          
+          for os_name, stats in combined['results_by_os'].items():
+              total = stats['total']
+              success = stats['success']
+              rate = round((success/total)*100) if total > 0 else 0
+              status_emoji = "✅" if stats['failed'] == 0 else "❌"
+              
+              print(f"| {status_emoji} {os_name} | {total} | {success} | {stats['failed']} | {stats['warnings']} | {rate}% |")
+          
+          # Save combined results
+          os.makedirs('.github/readme-verifier', exist_ok=True)
+          with open('.github/readme-verifier/combined-results.json', 'w') as f:
+              json.dump(combined, f, indent=2)
+          
+          EOF
+      
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read combined results
+            let combined;
+            try {
+              combined = JSON.parse(fs.readFileSync('.github/readme-verifier/combined-results.json', 'utf8'));
+            } catch (e) {
+              console.log('Could not read combined results');
+              return;
+            }
+            
+            // Check which OSes failed
+            const failedOSes = [];
+            for (const [os, stats] of Object.entries(combined.results_by_os)) {
+              if (stats.failed > 0) {
+                failedOSes.push({os, stats});
+              }
+            }
+            
+            if (failedOSes.length === 0) return;
+            
+            let body = '## ❌ README Setup Verification Failed\n\n';
+            body += `**Timestamp:** ${combined.timestamp}\n\n`;
+            body += '### Failed Operating Systems:\n\n';
+            
+            failedOSes.forEach(({os, stats}) => {
+              body += `#### ${os}\n`;
+              body += `- Total steps: ${stats.total}\n`;
+              body += `- Failed: ${stats.failed}\n`;
+              body += `- Success rate: ${Math.round((stats.success/stats.total)*100)}%\n\n`;
+            });
+            
+            body += '\n---\n';
+            body += '*This issue was automatically created by the multi-OS verification workflow.*\n';
+            body += '*Check the [Actions tab](../actions) for detailed logs.*';
+            
+            // Check if there's already an open issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'readme-verification'
+            });
+            
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '❌ README Setup Instructions Failing on Some Operating Systems',
+                body: body,
+                labels: ['readme-verification', 'documentation', 'bug', 'multi-os']
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues.data[0].number,
+                body: '### New Multi-OS Verification Failure\n\n' + body
+              });
+            }

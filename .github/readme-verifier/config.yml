@@ -1,19 +1,21 @@
-# README Verifier Configuration
+# README Verifier Configuration - Multi-OS Edition
 
 # Environments to test against
 environments:
   - name: macos
     runner: macos-latest
     enabled: true
+    shell: bash
   
-  # Future: Add more environments
-  # - name: ubuntu
-  #   runner: ubuntu-latest
-  #   enabled: false
-  # 
-  # - name: windows
-  #   runner: windows-latest
-  #   enabled: false
+  - name: ubuntu
+    runner: ubuntu-latest
+    enabled: true
+    shell: bash
+  
+  - name: windows
+    runner: windows-latest
+    enabled: true
+    shell: pwsh  # PowerShell for Windows
 
 # Verification settings
 settings:
@@ -27,7 +29,7 @@ settings:
   maxVerificationTime: 600000  # 10 minutes
   
   # Stop on first failure?
-  stopOnFailure: true
+  stopOnFailure: false  # Changed to false for multi-OS (continue even if one OS fails)
   
   # Create GitHub issues on failure?
   createIssues: true
@@ -37,6 +39,24 @@ settings:
     enabled: true
     location: "top"  # "top" or "bottom" of README
     style: "flat"    # shields.io style: flat, flat-square, plastic, for-the-badge
+    multiOS: true    # Enable multi-OS badges
+
+# Multi-OS specific settings
+multiOS:
+  # Run tests in parallel or sequential
+  parallel: true
+  
+  # Fail workflow if any OS fails
+  failFast: false
+  
+  # Which OS to use for updating README (avoid conflicts)
+  primaryOS: "macos"
+  
+  # Generate combined results
+  generateCombinedResults: true
+  
+  # Per-OS result files
+  perOSResults: true
 
 # Notification settings
 notifications:
@@ -47,6 +67,7 @@ notifications:
       - "readme-verification"
       - "documentation"
       - "bug"
+      - "multi-os"  # Added multi-os label
   
   # Future: Add Slack, email, etc.
   # slack:
@@ -63,11 +84,22 @@ execution:
   
   # Working directory for all steps (unless overridden)
   workingDir: "."
+  
+  # Cross-platform compatibility
+  crossPlatform:
+    # Normalize line endings
+    normalizeLineEndings: true
+    
+    # Handle path separators automatically
+    normalizePathSeparators: true
 
 # Results storage
 storage:
-  # Where to save results
+  # Where to save results (per-OS)
   resultsPath: ".github/readme-verifier/results.json"
+  
+  # Combined results from all OSes
+  combinedResultsPath: ".github/readme-verifier/combined-results.json"
   
   # Keep history of results?
   keepHistory: true
@@ -75,6 +107,9 @@ storage:
   
   # How many historical results to keep
   historyLimit: 30
+  
+  # Per-OS history naming
+  perOSHistoryFormat: "results-{OS}.json"  # e.g., results-macOS.json
 
 # Security
 security:
@@ -90,6 +125,8 @@ security:
     - "rm -rf"
     - "sudo"
     - "chmod 777"
+    - "del /f /s /q"  # Windows equivalent of rm -rf
+    - "rmdir /s /q"   # Windows remove directory
 
 # Advanced
 advanced:
@@ -103,3 +140,20 @@ advanced:
   envVars:
     NODE_ENV: "test"
     CI: "true"
+  
+  # Platform-specific settings
+  platformSettings:
+    macos:
+      # macOS-specific environment variables
+      envVars:
+        HOMEBREW_NO_AUTO_UPDATE: "1"
+    
+    ubuntu:
+      # Ubuntu-specific environment variables
+      envVars:
+        DEBIAN_FRONTEND: "noninteractive"
+    
+    windows:
+      # Windows-specific environment variables
+      envVars:
+        MSYS_NO_PATHCONV: "1"  # Prevent Git Bash path conversion
