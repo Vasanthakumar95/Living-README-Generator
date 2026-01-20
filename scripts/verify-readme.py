@@ -322,23 +322,92 @@ class ReadmeVerifier:
         return ' '.join(badges)
     
     def update_readme(self):
-        """Update README with verification badges"""
+        """Update README with verification badges or table"""
         with open(self.readme_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        badges = self.generate_badges()
+        # Check if we have multi-OS combined results
+        combined_results_path = Path('.github/readme-verifier/combined-results.json')
+        
+        if combined_results_path.exists():
+            # Generate multi-OS table
+            try:
+                with open(combined_results_path, 'r', encoding='utf-8') as f:
+                    combined = json.load(f)
+                
+                last_verified = datetime.fromisoformat(combined['timestamp']).strftime('%B %d, %Y at %I:%M %p UTC')
+                
+                # Build table
+                table_lines = [
+                    '## 📊 Multi-OS Verification Status',
+                    '',
+                    f'**Last Verified:** {last_verified}',
+                    '',
+                    '| OS | Total | Success | Failed | Warnings | Success Rate |',
+                    '|---|---|---|---|---|---|'
+                ]
+                
+                # Add rows for each OS
+                for os_name in ['macOS', 'Ubuntu', 'Windows']:
+                    # Find matching OS in results (handle different naming)
+                    stats = None
+                    for key, value in combined.get('results_by_os', {}).items():
+                        if os_name.lower() in key.lower() or (os_name == 'macOS' and 'darwin' in key.lower()):
+                            stats = value
+                            break
+                    
+                    if stats:
+                        total = stats['total']
+                        success = stats['success']
+                        failed = stats['failed']
+                        warnings = stats['warnings']
+                        rate = round((success/total)*100) if total > 0 else 0
+                        
+                        # Status emoji/icon
+                        if failed == 0 and warnings == 0:
+                            status = '✅'
+                        elif failed == 0:
+                            status = '⚠️'
+                        else:
+                            status = '❌'
+                        
+                        table_lines.append(f'| {status} {os_name} | {total} | {success} | {failed} | {warnings} | {rate}% |')
+                    else:
+                        # OS not tested
+                        table_lines.append(f'| ⏭️ {os_name} | - | - | - | - | - |')
+                
+                # Add overall summary
+                table_lines.extend([
+                    '',
+                    '**Overall Statistics:**',
+                    f"- Total Steps Across All Platforms: {combined.get('total_steps', 0)}",
+                    f"- Total Successful: {combined.get('total_success', 0)}",
+                    f"- Total Failed: {combined.get('total_failed', 0)}",
+                    f"- Total Warnings: {combined.get('total_warnings', 0)}",
+                    f"- Combined Success Rate: {round((combined.get('total_success', 0) / combined.get('total_steps', 1) * 100))}%",
+                    ''
+                ])
+                
+                verification_section = '\n'.join(table_lines)
+                
+            except Exception as e:
+                # Fall back to badges on error
+                verification_section = self.generate_badges()
+        else:
+            # Fall back to single-OS badges
+            verification_section = self.generate_badges()
         
         badge_marker = '<!-- VERIFICATION-BADGES -->'
         badge_end_marker = '<!-- END-VERIFICATION-BADGES -->'
         
-        badge_section = f'{badge_marker}\n{badges}\n{badge_end_marker}'
+        badge_section = f'{badge_marker}\n{verification_section}\n{badge_end_marker}'
         
         if badge_marker in content:
-            # Replace existing badges
+            # Replace existing badges/table
             pattern = f'{re.escape(badge_marker)}.*?{re.escape(badge_end_marker)}'
             content = re.sub(pattern, badge_section, content, flags=re.DOTALL)
         else:
-            # Add badges after first header
+            # Add badges/table after first header
             lines = content.split('\n')
             for i, line in enumerate(lines):
                 if line.startswith('# '):
