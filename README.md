@@ -2,7 +2,23 @@
 > **Stop the rot.** Automatically verify your README setup instructions so they never lie again.
 
 <!-- VERIFICATION-BADGES -->
-![Multi-OS Status](https://img.shields.io/badge/multi--os-passing-brightgreen) ![Platforms](https://img.shields.io/badge/Windows%20OK-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-01%2F20%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
+## 📊 Multi-OS Verification Status
+
+**Last Verified:** January 20, 2026 at 01:36 PM UTC
+
+| OS | Total | Success | Failed | Warnings | Success Rate |
+|---|---|---|---|---|---|
+| ✅ macOS | 1 | 1 | 0 | 0 | 100% |
+| ⏭️ Ubuntu | - | - | - | - | - |
+| ✅ Windows | 1 | 1 | 0 | 0 | 100% |
+
+**Overall Statistics:**
+- Total Steps Across All Platforms: 3
+- Total Successful: 3
+- Total Failed: 0
+- Total Warnings: 0
+- Combined Success Rate: 100%
+
 <!-- END-VERIFICATION-BADGES -->
 
 ### ✅ Verification Demonstration (This Project)
