@@ -237,7 +237,67 @@ class ReadmeVerifier:
         safe_print(f'\n💾 Results saved to {output_path}')
     
     def generate_badges(self):
-        """Generate badge markdown"""
+        """Generate badge markdown - uses multi-OS results if available"""
+        # Check if combined multi-OS results exist
+        combined_results_path = Path('.github/readme-verifier/combined-results.json')
+        
+        if combined_results_path.exists():
+            # Use multi-OS combined results
+            try:
+                with open(combined_results_path, 'r', encoding='utf-8') as f:
+                    combined = json.load(f)
+                
+                last_verified = datetime.fromisoformat(combined['timestamp']).strftime('%m/%d/%Y')
+                
+                # Calculate overall statistics
+                total_steps = combined['total_steps']
+                total_success = combined['total_success']
+                total_failed = combined['total_failed']
+                total_warnings = combined['total_warnings']
+                success_rate = round((total_success / total_steps * 100)) if total_steps > 0 else 0
+                
+                # Determine overall status
+                if total_failed == 0 and total_warnings == 0:
+                    status_color = 'brightgreen'
+                    status_text = 'passing'
+                elif total_failed == 0:
+                    status_color = 'yellow'
+                    status_text = 'partial'
+                else:
+                    status_color = 'red'
+                    status_text = 'failing'
+                
+                # Count passing OSes
+                os_results = combined.get('results_by_os', {})
+                passing_oses = [os_name for os_name, stats in os_results.items() if stats['failed'] == 0]
+                total_oses = len(os_results)
+                
+                # Generate OS badges
+                os_badge_parts = []
+                for os_name in ['macOS', 'Ubuntu', 'Windows']:
+                    if os_name in os_results:
+                        stats = os_results[os_name]
+                        if stats['failed'] == 0:
+                            os_badge_parts.append(f'{os_name}%20OK')
+                        else:
+                            os_badge_parts.append(f'{os_name}%20FAIL')
+                
+                os_badge_text = '%20|%20'.join(os_badge_parts) if os_badge_parts else 'Multi--OS'
+                
+                badges = [
+                    f'![Multi-OS Status](https://img.shields.io/badge/multi--os-{status_text}-{status_color})',
+                    f'![Platforms](https://img.shields.io/badge/{os_badge_text}-blue)',
+                    f'![Last Verified](https://img.shields.io/badge/last%20verified-{last_verified.replace("/", "%2F")}-lightgrey)',
+                    f'![Success Rate](https://img.shields.io/badge/success%20rate-{success_rate}%25-{status_color})'
+                ]
+                
+                return ' '.join(badges)
+                
+            except Exception as e:
+                # Fall back to single-OS if combined results can't be read
+                pass
+        
+        # Fall back to single-OS results
         summary = self.get_summary()
         last_verified = datetime.fromisoformat(self.results['timestamp']).strftime('%m/%d/%Y')
         os_name = self.results['environment']['os']
