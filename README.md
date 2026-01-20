@@ -4,12 +4,12 @@
 <!-- VERIFICATION-BADGES -->
 ## 📊 Multi-OS Verification Status
 
-**Last Verified:** January 20, 2026 at 01:36 PM UTC
+**Last Verified:** January 20, 2026 at 01:40 PM UTC
 
 | OS | Total | Success | Failed | Warnings | Success Rate |
 |---|---|---|---|---|---|
-| ✅ macOS | 1 | 1 | 0 | 0 | 100% |
-| ⏭️ Ubuntu | - | - | - | - | - |
+| ✅ macOS (Darwin) | 1 | 1 | 0 | 0 | 100% |
+| ✅ Ubuntu (Linux) | 1 | 1 | 0 | 0 | 100% |
 | ✅ Windows | 1 | 1 | 0 | 0 | 100% |
 
 **Overall Statistics:**
