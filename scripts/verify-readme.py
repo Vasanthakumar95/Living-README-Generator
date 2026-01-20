@@ -76,7 +76,7 @@ class ReadmeVerifier:
     
     def parse_readme(self):
         """Parse README.md and extract verification steps"""
-        with open(self.readme_path, 'r') as f:
+        with open(self.readme_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
         steps = []
@@ -231,7 +231,7 @@ class ReadmeVerifier:
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
         
-        with open(output_file, 'w') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(self.results, f, indent=2)
         
         safe_print(f'\n💾 Results saved to {output_path}')
@@ -263,7 +263,7 @@ class ReadmeVerifier:
     
     def update_readme(self):
         """Update README with verification badges"""
-        with open(self.readme_path, 'r') as f:
+        with open(self.readme_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
         badges = self.generate_badges()
@@ -288,7 +288,7 @@ class ReadmeVerifier:
                     break
             content = '\n'.join(lines)
         
-        with open(self.readme_path, 'w') as f:
+        with open(self.readme_path, 'w', encoding='utf-8') as f:
             f.write(content)
         
         safe_print('📝 README.md updated with verification badges')
