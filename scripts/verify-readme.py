@@ -12,6 +12,49 @@ import yaml
 from datetime import datetime
 from pathlib import Path
 import platform
+import os
+
+# Fix Windows encoding issues with emojis
+IS_WINDOWS = sys.platform == 'win32'
+
+# Set UTF-8 encoding for Windows
+if IS_WINDOWS:
+    os.environ['PYTHONIOENCODING'] = 'utf-8'
+    try:
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8')
+        if hasattr(sys.stderr, 'reconfigure'):
+            sys.stderr.reconfigure(encoding='utf-8')
+    except:
+        pass
+
+# Emoji replacements for Windows terminal
+EMOJI_MAP = {
+    '🚀': '[START]',
+    '✅': '[OK]',
+    '❌': '[FAIL]',
+    '⚠️': '[WARN]',
+    '🔍': '[RUN]',
+    '📊': '[REPORT]',
+    '💾': '[SAVE]',
+    '📝': '[UPDATE]',
+    '📈': '[RATE]',
+}
+
+def format_output(text):
+    """Format output text, replacing emojis on Windows"""
+    if IS_WINDOWS:
+        for emoji, replacement in EMOJI_MAP.items():
+            text = text.replace(emoji, replacement)
+    return text
+
+def safe_print(text):
+    """Print text safely, handling Windows encoding"""
+    try:
+        print(format_output(text))
+    except UnicodeEncodeError:
+        # Fallback: remove all non-ASCII characters
+        print(text.encode('ascii', 'ignore').decode('ascii'))
 
 class ReadmeVerifier:
     def __init__(self, readme_path, config_path=None):
@@ -38,7 +81,8 @@ class ReadmeVerifier:
         
         steps = []
         # Regex to match YAML frontmatter followed by code block
-        pattern = r'---\n(.*?)\n---\n```(\w+)?\n(.*?)```'
+        # Pre-filter to only match blocks that contain 'verify' keyword
+        pattern = r'---\n(.*?verify.*?)\n---\n```(\w+)?\n(.*?)```'
         
         for match in re.finditer(pattern, content, re.DOTALL):
             try:
@@ -59,15 +103,15 @@ class ReadmeVerifier:
                 # Only warn if we found potential verification blocks with errors
                 has_verify_keyword = 'verify' in match.group(1).lower()
                 if has_verify_keyword:
-                    print(f'Warning: Found YAML with "verify" but failed to parse: {e}')
+                    safe_print(f'Warning: Found YAML with "verify" but failed to parse: {e}')
                 # Otherwise silently skip (likely documentation examples)
         
         return steps
     
     def execute_step(self, step):
         """Execute a single verification step"""
-        print(f'\n🔍 Executing: {step["name"]}')
-        print(f'   {step["description"] or "No description"}')
+        safe_print(f'\n🔍 Executing: {step["name"]}')
+        safe_print(f'   {step["description"] or "No description"}')
         
         result = {
             'name': step['name'],
@@ -98,7 +142,7 @@ class ReadmeVerifier:
                 result['status'] = 'success'
                 result['output'] = process.stdout
                 result['duration'] = duration
-                print(f'   ✅ Success ({duration:.0f}ms)')
+                safe_print(f'   ✅ Success ({duration:.0f}ms)')
             else:
                 raise subprocess.CalledProcessError(
                     process.returncode, 
@@ -111,11 +155,11 @@ class ReadmeVerifier:
             result['status'] = 'failed'
             result['error'] = f'Timeout after {step["timeout"]}s'
             result['duration'] = step['timeout'] * 1000
-            print(f'   ❌ Failed (timeout)')
+            safe_print(f'   ❌ Failed (timeout)')
             
             if not step['required']:
                 result['status'] = 'warning'
-                print(f'   ⚠️  Non-required step, continuing...')
+                safe_print(f'   ⚠️  Non-required step, continuing...')
             else:
                 raise
                 
@@ -125,12 +169,12 @@ class ReadmeVerifier:
             result['error'] = e.stderr or str(e)
             result['output'] = e.stdout or ''
             result['duration'] = duration
-            print(f'   ❌ Failed ({duration:.0f}ms)')
-            print(f'   Error: {e.stderr or e}')
+            safe_print(f'   ❌ Failed ({duration:.0f}ms)')
+            safe_print(f'   Error: {e.stderr or e}')
             
             if not step['required']:
                 result['status'] = 'warning'
-                print(f'   ⚠️  Non-required step, continuing...')
+                safe_print(f'   ⚠️  Non-required step, continuing...')
             else:
                 raise
         
@@ -138,17 +182,17 @@ class ReadmeVerifier:
     
     def verify(self):
         """Execute all verification steps sequentially"""
-        print('🚀 Starting README verification...\n')
-        print(f'Environment: {self.results["environment"]["os"]} ({self.results["environment"]["arch"]})')
-        print(f'Python: {self.results["environment"]["pythonVersion"]}\n')
+        safe_print('🚀 Starting README verification...\n')
+        safe_print(f'Environment: {self.results["environment"]["os"]} ({self.results["environment"]["arch"]})')
+        safe_print(f'Python: {self.results["environment"]["pythonVersion"]}\n')
         
         steps = self.parse_readme()
         
         if not steps:
-            print('⚠️  No verification steps found in README.md')
+            safe_print('⚠️  No verification steps found in README.md')
             return self.results
         
-        print(f'Found {len(steps)} verification step(s)\n')
+        safe_print(f'Found {len(steps)} verification step(s)\n')
         
         for step in steps:
             try:
@@ -190,7 +234,7 @@ class ReadmeVerifier:
         with open(output_file, 'w') as f:
             json.dump(self.results, f, indent=2)
         
-        print(f'\n💾 Results saved to {output_path}')
+        safe_print(f'\n💾 Results saved to {output_path}')
     
     def generate_badges(self):
         """Generate badge markdown"""
@@ -247,30 +291,30 @@ class ReadmeVerifier:
         with open(self.readme_path, 'w') as f:
             f.write(content)
         
-        print('📝 README.md updated with verification badges')
+        safe_print('📝 README.md updated with verification badges')
     
     def print_report(self):
         """Print verification report"""
         summary = self.get_summary()
         
-        print('\n' + '=' * 60)
-        print('📊 VERIFICATION REPORT')
-        print('=' * 60)
-        print(f'Total Steps:    {summary["total"]}')
-        print(f'✅ Success:      {summary["success"]}')
-        print(f'❌ Failed:       {summary["failed"]}')
-        print(f'⚠️  Warnings:     {summary["warnings"]}')
-        print(f'📈 Success Rate: {summary["successRate"]}%')
-        print('=' * 60)
+        safe_print('\n' + '=' * 60)
+        safe_print('📊 VERIFICATION REPORT')
+        safe_print('=' * 60)
+        safe_print(f'Total Steps:    {summary["total"]}')
+        safe_print(f'✅ Success:      {summary["success"]}')
+        safe_print(f'❌ Failed:       {summary["failed"]}')
+        safe_print(f'⚠️  Warnings:     {summary["warnings"]}')
+        safe_print(f'📈 Success Rate: {summary["successRate"]}%')
+        safe_print('=' * 60)
         
-        print('\nStep Details:')
+        safe_print('\nStep Details:')
         for i, step in enumerate(self.results['steps'], 1):
             icon = '✅' if step['status'] == 'success' else '⚠️' if step['status'] == 'warning' else '❌'
-            print(f'  {i}. {icon} {step["name"]} ({step["duration"]:.0f}ms)')
+            safe_print(f'  {i}. {icon} {step["name"]} ({step["duration"]:.0f}ms)')
             if step.get('error'):
-                print(f'     Error: {step["error"]}')
+                safe_print(f'     Error: {step["error"]}')
         
-        print()
+        safe_print('')
 
 def main():
     readme_path = sys.argv[1] if len(sys.argv) > 1 else 'README.md'
@@ -291,7 +335,7 @@ def main():
             sys.exit(1)
     
     except Exception as e:
-        print(f'\n❌ Verification failed: {e}')
+        safe_print(f'\n❌ Verification failed: {e}')
         sys.exit(1)
 
 if __name__ == '__main__':
