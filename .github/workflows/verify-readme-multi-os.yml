@@ -100,7 +100,7 @@ jobs:
           else
             git add README.md
             git add .github/readme-verifier/
-            git commit -m "🔄 Update README verification badges [skip ci]"
+            git commit -m "Update README verification badges [skip ci]"
             git push
           fi
       
@@ -126,9 +126,9 @@ jobs:
           print("| Metric | Value |")
           print("|--------|-------|")
           print(f"| Total Steps | {total} |")
-          print(f"| ✅ Success | {success} |")
-          print(f"| ❌ Failed | {failed} |")
-          print(f"| ⚠️ Warnings | {warnings} |")
+          print(f"| Success | {success} |")
+          print(f"| Failed | {failed} |")
+          print(f"| Warnings | {warnings} |")
           print(f"| Success Rate | {round((success/total)*100) if total > 0 else 0}% |")
           EOF
           fi
@@ -182,7 +182,7 @@ jobs:
                           combined['timestamp'] = data['timestamp']
           
           # Generate summary
-          print("## 📊 Multi-OS Verification Summary")
+          print("## Multi-OS Verification Summary")
           print()
           print("| OS | Total | Success | Failed | Warnings | Success Rate |")
           print("|---|---|---|---|---|---|")
@@ -191,9 +191,9 @@ jobs:
               total = stats['total']
               success = stats['success']
               rate = round((success/total)*100) if total > 0 else 0
-              status_emoji = "✅" if stats['failed'] == 0 else "❌"
+              status_icon = "PASS" if stats['failed'] == 0 else "FAIL"
               
-              print(f"| {status_emoji} {os_name} | {total} | {success} | {stats['failed']} | {stats['warnings']} | {rate}% |")
+              print(f"| {status_icon} {os_name} | {total} | {success} | {stats['failed']} | {stats['warnings']} | {rate}% |")
           
           # Save combined results
           os.makedirs('.github/readme-verifier', exist_ok=True)
@@ -228,7 +228,7 @@ jobs:
             
             if (failedOSes.length === 0) return;
             
-            let body = '## ❌ README Setup Verification Failed\n\n';
+            let body = '## README Setup Verification Failed\n\n';
             body += `**Timestamp:** ${combined.timestamp}\n\n`;
             body += '### Failed Operating Systems:\n\n';
             
@@ -255,7 +255,7 @@ jobs:
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: '❌ README Setup Instructions Failing on Some Operating Systems',
+                title: 'README Setup Instructions Failing on Some Operating Systems',
                 body: body,
                 labels: ['readme-verification', 'documentation', 'bug', 'multi-os']
               });
