@@ -2,7 +2,7 @@
 > **Stop the rot.** Automatically verify your README setup instructions so they never lie again.
 
 <!-- VERIFICATION-BADGES -->
-![Setup Status](https://img.shields.io/badge/setup-passing-brightgreen) ![Verified On](https://img.shields.io/badge/verified%20on-Darwin-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-01%2F20%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
+![Multi-OS Status](https://img.shields.io/badge/multi--os-passing-brightgreen) ![Platforms](https://img.shields.io/badge/Windows%20OK-blue) ![Last Verified](https://img.shields.io/badge/last%20verified-01%2F20%2F2026-lightgrey) ![Success Rate](https://img.shields.io/badge/success%20rate-100%25-brightgreen)
 <!-- END-VERIFICATION-BADGES -->
 
 ### ✅ Verification Demonstration (This Project)
