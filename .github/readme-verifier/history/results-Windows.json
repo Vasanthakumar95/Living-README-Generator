@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-01-20T13:28:50.206485",
+  "environment": {
+    "os": "Windows",
+    "arch": "AMD64",
+    "pythonVersion": "3.11.9",
+    "platform": "Windows-10-10.0.26100-SP0"
+  },
+  "steps": [
+    {
+      "name": "check-node",
+      "description": "Ensure Node.js 18+",
+      "status": "success",
+      "output": "\u00e2\u0153\u201c Node.js v22\n",
+      "error": "",
+      "duration": 3083.358,
+      "timestamp": "2026-01-20T13:28:50.234262"
+    }
+  ]
+}

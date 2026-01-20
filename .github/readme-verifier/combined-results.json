@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-01-20T13:28:26.840210",
+  "results_by_os": {
+    "Darwin": {
+      "total": 1,
+      "success": 1,
+      "failed": 0,
+      "warnings": 0,
+      "timestamp": "2026-01-20T13:28:26.840210"
+    },
+    "Linux": {
+      "total": 1,
+      "success": 1,
+      "failed": 0,
+      "warnings": 0,
+      "timestamp": "2026-01-20T13:28:25.146746"
+    },
+    "Windows": {
+      "total": 1,
+      "success": 1,
+      "failed": 0,
+      "warnings": 0,
+      "timestamp": "2026-01-20T13:28:50.206485"
+    }
+  },
+  "total_steps": 3,
+  "total_success": 3,
+  "total_failed": 0,
+  "total_warnings": 0
+}

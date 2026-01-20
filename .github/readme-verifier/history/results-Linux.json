@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-01-20T13:28:25.146746",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64",
+    "pythonVersion": "3.11.14",
+    "platform": "Linux-6.11.0-1018-azure-x86_64-with-glibc2.39"
+  },
+  "steps": [
+    {
+      "name": "check-node",
+      "description": "Ensure Node.js 18+",
+      "status": "success",
+      "output": "\u2713 Node.js v20\n",
+      "error": "",
+      "duration": 104.96600000000001,
+      "timestamp": "2026-01-20T13:28:25.154453"
+    }
+  ]
+}
