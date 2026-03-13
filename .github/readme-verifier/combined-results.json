@@ -1,23 +1,30 @@
 {
-  "timestamp": "2026-03-12T04:12:16.318162",
+  "timestamp": "2026-03-13T04:10:43.431969",
   "results_by_os": {
+    "Linux": {
+      "total": 1,
+      "success": 1,
+      "failed": 0,
+      "warnings": 0,
+      "timestamp": "2026-03-13T04:10:43.431969"
+    },
     "Darwin": {
       "total": 1,
       "success": 1,
       "failed": 0,
       "warnings": 0,
-      "timestamp": "2026-03-12T04:12:16.318162"
+      "timestamp": "2026-03-13T04:10:42.871369"
     },
     "Windows": {
       "total": 1,
       "success": 1,
       "failed": 0,
       "warnings": 0,
-      "timestamp": "2026-03-12T04:12:30.186664"
+      "timestamp": "2026-03-13T04:10:52.269957"
     }
   },
-  "total_steps": 2,
-  "total_success": 2,
+  "total_steps": 3,
+  "total_success": 3,
   "total_failed": 0,
   "total_warnings": 0
 }
