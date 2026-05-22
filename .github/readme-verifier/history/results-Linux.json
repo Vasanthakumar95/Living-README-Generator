@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-05-21T06:07:35.093732",
+  "timestamp": "2026-05-22T06:03:59.698652",
   "environment": {
     "os": "Linux",
     "arch": "x86_64",
@@ -11,10 +11,10 @@
       "name": "check-node",
       "description": "Ensure Node.js 18+",
       "status": "success",
-      "output": "\u2713 Node.js v22\n",
+      "output": "\u2713 Node.js v20\n",
       "error": "",
-      "duration": 227.215,
-      "timestamp": "2026-05-21T06:07:35.102070"
+      "duration": 1530.854,
+      "timestamp": "2026-05-22T06:03:59.706317"
     }
   ]
 }
