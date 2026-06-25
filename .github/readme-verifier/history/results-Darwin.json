@@ -1,20 +1,20 @@
 {
-  "timestamp": "2026-06-24T06:04:01.616499",
+  "timestamp": "2026-06-25T06:04:00.834086",
   "environment": {
     "os": "Darwin",
     "arch": "arm64",
     "pythonVersion": "3.11.9",
-    "platform": "macOS-26.4-arm64-arm-64bit"
+    "platform": "macOS-15.7.7-arm64-arm-64bit"
   },
   "steps": [
     {
       "name": "check-node",
       "description": "Ensure Node.js 18+",
       "status": "success",
-      "output": "\u2713 Node.js v24\n",
+      "output": "\u2713 Node.js v22\n",
       "error": "",
-      "duration": 269.83099999999996,
-      "timestamp": "2026-06-24T06:04:01.636675"
+      "duration": 265.04299999999995,
+      "timestamp": "2026-06-25T06:04:00.855770"
     }
   ]
 }
