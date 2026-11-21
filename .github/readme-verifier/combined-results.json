@@ -1,26 +1,26 @@
 {
-  "timestamp": "2026-11-20T09:37:56.574837",
+  "timestamp": "2026-11-21T09:09:37.507533",
   "results_by_os": {
-    "Darwin": {
+    "Windows": {
       "total": 1,
       "success": 1,
       "failed": 0,
       "warnings": 0,
-      "timestamp": "2026-11-20T09:37:56.574837"
+      "timestamp": "2026-11-21T09:09:37.507533"
     },
     "Linux": {
       "total": 1,
       "success": 1,
       "failed": 0,
       "warnings": 0,
-      "timestamp": "2026-11-20T09:37:51.413999"
+      "timestamp": "2026-11-21T09:09:27.137163"
     },
-    "Windows": {
+    "Darwin": {
       "total": 1,
       "success": 1,
       "failed": 0,
       "warnings": 0,
-      "timestamp": "2026-11-20T09:38:05.379860"
+      "timestamp": "2026-11-21T09:09:29.456188"
     }
   },
   "total_steps": 3,
